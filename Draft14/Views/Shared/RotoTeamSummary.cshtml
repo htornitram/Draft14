@@ -1,0 +1,142 @@
+﻿@model Draft14.Models.RotoTeam
+
+@{
+    Dictionary<string, decimal> teamTot = new Dictionary<string, decimal>();
+
+    teamTot.Add("BatPrice", Model.Drafteds.Where(x => x.PositionId > 1).Sum(x => x.Price));
+    teamTot.Add("AB", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjAB));
+    teamTot.Add("H", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjH));
+    teamTot.Add("HR", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjHR));
+    teamTot.Add("RS", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjRS));
+    teamTot.Add("RBI", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjRBI));
+    teamTot.Add("SB", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjSB));
+
+    if (teamTot["AB"] > 0)
+    {
+        teamTot.Add("AVG", teamTot["H"] / teamTot["AB"]);
+    }
+    else
+    {
+        teamTot.Add("AVG", 0);
+    }
+
+    teamTot.Add("PitchPrice", Model.Drafteds.Where(x => x.PositionId == 1).Sum(x => x.Price));
+    teamTot.Add("Outs", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjOuts));
+    teamTot.Add("ER", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjER));
+    teamTot.Add("W", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjW));
+    teamTot.Add("SV", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjSV));
+    teamTot.Add("K", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjK));
+    teamTot.Add("WH", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjWH));
+
+    if (teamTot["Outs"] > 0)
+    {
+        teamTot.Add("ERA", teamTot["ER"] * 27 / teamTot["Outs"]);
+        teamTot.Add("WHIP", teamTot["WH"] * 3 / teamTot["Outs"]);
+    }
+    else
+    {
+        teamTot.Add("ERA", 0);
+        teamTot.Add("WHIP", 0);
+    }
+
+
+}
+
+<table class="table table-condensed">
+    <tr>
+        <th>Team</th>
+        <th colspan="2">Batters</th>
+        <th class="text-right">AB</th>
+        <th class="text-right">H</th>
+        <th class="text-right">HR</th>
+        <th class="text-right">RS</th>
+        <th class="text-right">RBI</th>
+        <th class="text-right">SB</th>
+        <th class="text-right">AVG</th>
+        <th colspan="2">Pitchers</th>
+        <th class="text-right">IP</th>
+        <th class="text-right">ER</th>
+        <th class="text-right">W</th>
+        <th class="text-right">SV</th>
+        <th class="text-right">K</th>
+        <th class="text-right">WHIP</th>
+        <th class="text-right">ERA</th>
+    </tr>
+
+    <tr class="active">
+        <td>@Html.ActionLink(Model.RotoTeamName, "Roster", "RotoTeam", new { id = Model.RotoTeamId }, null)</td>
+        <td class="text-right">@(Model.Drafteds.Count(x => x.PositionId > 1 && x.ActiveFlag > 0))</td>
+        <td class="text-right">@(teamTot["BatPrice"].ToString("F2"))</td>
+        <td class="text-right">@(teamTot["AB"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["H"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["HR"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["RS"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["RBI"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["SB"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["AVG"].ToString("F3"))</td>
+        <td class="text-right">@(Model.Drafteds.Count(x => x.PositionId == 1 && x.ActiveFlag > 0))</td>
+        <td class="text-right">@(teamTot["PitchPrice"].ToString("F2"))</td>
+        <td class="text-right">@(Math.Truncate(teamTot["Outs"] / 3)).@(teamTot["Outs"] % 3)</td>
+        <td class="text-right">@(teamTot["ER"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["W"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["SV"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["K"].ToString("F0"))</td>
+        <td class="text-right">@(teamTot["WHIP"].ToString("F4"))</td>
+        <td class="text-right">@(teamTot["ERA"].ToString("F2"))</td>
+    </tr>
+
+    <tr class="text-info">
+        <td>Targets</td>
+        <td></td>
+        <td class="text-right">@Model.Target.PriceBat.ToString("F2")<br />
+            @((Model.Target.PriceBat == 0 ? 0 : teamTot["BatPrice"] / Model.Target.PriceBat).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjAB<br />
+            @((Model.Target.ProjAB == 0 ? 0 : teamTot["AB"] / Model.Target.ProjAB).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjH<br />
+            @((Model.Target.ProjH == 0 ? 0 : teamTot["H"] / Model.Target.ProjH).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjHR<br />
+            @((Model.Target.ProjHR == 0 ? 0 : teamTot["HR"] / Model.Target.ProjHR).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjRS<br />
+            @((Model.Target.ProjRS == 0 ? 0 : teamTot["RS"] / Model.Target.ProjRS).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjRBI<br />
+            @((Model.Target.ProjRBI == 0 ? 0 : teamTot["RBI"] / Model.Target.ProjRBI).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjSB<br />
+            @((Model.Target.ProjSB == 0 ? 0 : teamTot["SB"] / Model.Target.ProjSB).ToString("P0"))</td>
+        <td class="text-right">@((Model.Target.ProjAB == 0 ? 0 : (float)Model.Target.ProjH / Model.Target.ProjAB).ToString("F3"))<br />
+            @((Model.Target.ProjH == 0 ? 0 : ((Model.Target.ProjAB * teamTot["AVG"]) / (Model.Target.ProjH))).ToString("P0"))</td>
+        <td></td>
+        <td class="text-right">@Model.Target.PricePit.ToString("F2")<br />
+            @((Model.Target.PricePit == 0 ? 0 : teamTot["PitchPrice"] / Model.Target.PricePit).ToString("P0"))</td>
+        <td class="text-right">@(Model.Target.ProjOuts / 3).@(Model.Target.ProjOuts % 3)<br />
+            @((Model.Target.ProjOuts == 0 ? 0 : teamTot["Outs"] / Model.Target.ProjOuts).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjER<br />
+            @((Model.Target.ProjER == 0 ? 0 : teamTot["ER"] / Model.Target.ProjER).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjW<br />
+            @((Model.Target.ProjW == 0 ? 0 : teamTot["W"] / Model.Target.ProjW).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjSV<br />
+            @((Model.Target.ProjSV == 0 ? 0 : teamTot["SV"] / Model.Target.ProjSV).ToString("P0"))</td>
+        <td class="text-right">@Model.Target.ProjK<br />
+            @((Model.Target.ProjK == 0 ? 0 : teamTot["K"] / Model.Target.ProjK).ToString("P0"))</td>
+        <td class="text-right">@((Model.Target.ProjOuts == 0 ? 0 : (float)Model.Target.ProjWH * 3 / Model.Target.ProjOuts).ToString("F4"))<br />
+            @((Model.Target.ProjWH == 0 ? 0 : ((Model.Target.ProjOuts * teamTot["WHIP"]) / (Model.Target.ProjWH * 3))).ToString("P0"))</td>
+        <td class="text-right">@((Model.Target.ProjOuts == 0 ? 0 : (float)Model.Target.ProjER * 27 / Model.Target.ProjOuts).ToString("F2"))<br />
+            @((Model.Target.ProjER == 0 ? 0 : ((Model.Target.ProjOuts * teamTot["ERA"]) / (Model.Target.ProjER * 27))).ToString("P0"))</td>
+    </tr>
+
+    <tr class="active">
+        <td colspan="19">
+            Players: @Model.Drafteds.Count(x => x.ActiveFlag > 0) for @((teamTot["BatPrice"] + teamTot["PitchPrice"]).ToString()) ...
+            @((Convert.ToDecimal(100) - teamTot["BatPrice"] - teamTot["PitchPrice"]).ToString()) Remaining...
+            Reserves: @Model.Drafteds.Count(x => x.ActiveFlag == 0) ...
+            Pos. Needed: @Model.RotoTeamPosNeeded.PosNeeded
+
+            @if (! Model.RotoTeamPosNeeded.PosMoves.IsEmpty())
+            {
+                <text>... Pos. Moves: </text> @Model.RotoTeamPosNeeded.PosMoves
+            }
+
+        </td>
+    </tr>
+
+</table>
+

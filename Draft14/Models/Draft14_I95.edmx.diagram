@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7ed98c0d3a244508afc64057c65e8239" Name="Diagram1" ZoomLevel="61">
+        <EntityTypeShape EntityType="Draft14_I95Model.Drafted" Width="1.5" PointX="3" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="Draft14_I95Model.Player" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Draft14_I95Model.Position" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Draft14_I95Model.RotoTeam" Width="1.5" PointX="0.75" PointY="10.125" IsExpanded="true" />
+        <AssociationConnector Association="Draft14_I95Model.FK_Drafted_Player" ManuallyRouted="false" />
+        <AssociationConnector Association="Draft14_I95Model.FK_Drafted_Position" ManuallyRouted="false" />
+        <AssociationConnector Association="Draft14_I95Model.FK_Drafted_RotoTeam" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Draft14_I95Model.Target" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Draft14_I95Model.MLBTeam" Width="1.5" PointX="0.75" PointY="13.625" />
+        <AssociationConnector Association="Draft14_I95Model.FK_Player_MLBTeam" />
+        <AssociationConnector Association="Draft14_I95Model.FK_RotoTeam_Target" />
+        <EntityTypeShape EntityType="Draft14_I95Model.RotoTeamPosNeeded" Width="1.5" PointX="7" PointY="6.875" />
+        <AssociationConnector Association="Draft14_I95Model.RotoTeamPosNeededRotoTeam" />
+        <EntityTypeShape EntityType="Draft14_I95Model.PositionAnalysis" Width="1.5" PointX="3.875" PointY="6.125" />
+        <AssociationConnector Association="Draft14_I95Model.PositionPositionAnalysis" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

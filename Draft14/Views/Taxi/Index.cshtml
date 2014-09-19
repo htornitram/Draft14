@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Draft14.Models.Player>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Taxi Round Available Players";
+}
+
+<div class="container">
+    <h2>Available Players - Taxi Round</h2>
+    <table class="table table-condensed">
+        <tr>
+            <th>@Html.ActionLink("Name", "Index", new { sortBy = ViewBag.NameSort })</th>
+            <th>@Html.ActionLink("Team", "Index", new { sortBy = ViewBag.TeamSort })</th>
+            <th class="text-right">AB/IP</th>
+            <th class="text-right">H/ER</th>
+            <th class="text-right">HR/W</th>
+            <th class="text-right">RS/SV</th>
+            <th class="text-right">RBI/K</th>
+            <th class="text-right">SB/WHIP</th>
+            <th class="text-right">AVG/ERA</th>
+            <th class="text-right">@Html.ActionLink("Est Value", "Index", new { sortBy = ViewBag.ValSort })</th>
+            <th class="text-center">@Html.ActionLink("Tier", "Index", new { sortBy = ViewBag.TierSort })</th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            string rowClass = (item.PosCode == 1) ? "active" : "";
+            <tr class="@rowClass">
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                    (@Html.DisplayFor(modelItem => item.PosDisp))
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.MLBTeam)</td>
+                @if (@item.PosCode == 1)
+                {
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjIP)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjER)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjW)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjSV)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjK)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjWHIP)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjERA)</td>
+                }
+                else
+                {
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjAB)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjH)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjHR)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjRS)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjRBI)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjSB)</td>
+                    <td class="text-right">@Html.DisplayFor(modelItem => item.ProjAvg)</td>
+                }
+                <td class="text-right">@Html.DisplayFor(modelItem => item.EstValue)</td>
+
+                @if (item.TierColor.HasValue)
+                {
+                    string extraClass = "";
+                    switch (item.TierColor)
+                    {
+                        case 3:
+                            extraClass = " success";
+                            break;
+                        case 2:
+
+                            extraClass = " warning";
+                            break;
+                        case 1:
+                            extraClass = " danger";
+                            break;
+                    }
+                    <td class="text-center @extraClass">
+                        @item.TierNum ( #@(item.TierRank) )
+                    </td>
+                }
+                else
+                {
+                    <td class="text-center"></td>
+                }
+
+                @if (item.Drafted == null)
+                {
+                    <td>@Html.ActionLink("Draft", "DraftTaxi", "Player", new { id = item.PlayerId }, null)</td>
+                }
+                else
+                {
+                    <td>@item.Drafted.RotoTeam.RotoTeamName</td>
+                }
+
+            </tr>
+
+            if (item.Notes != null)
+            {
+                <tr class="text-muted @rowClass" style="font-size:xx-small">
+                    <td></td>
+                    <td></td>
+                    <td colspan="10">@item.Notes</td>
+                </tr>
+            }
+
+
+        }
+
+    </table>
+
+</div>

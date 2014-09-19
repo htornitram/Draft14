@@ -1,0 +1,16 @@
+﻿@model Draft14.Models.Drafted
+
+@{
+    ViewBag.Title = "DraftActive";
+    ViewBag.DraftType = "A";
+}
+
+@{Html.RenderPartial("DraftBase", Model);}
+
+<div>
+    @Html.ActionLink("Cancel", "Roster", "MLBTeam", new { id = Model.Player.MLBTeam1.MLBTeamAbbr }, null)
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

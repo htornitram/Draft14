@@ -1,0 +1,16 @@
+﻿@model Draft14.Models.Drafted
+
+@{
+    ViewBag.Title = "DraftTaxi";
+    ViewBag.DraftType = "T";
+}
+
+@{Html.RenderPartial("DraftBase", Model);}
+
+<div>
+    @Html.ActionLink("Cancel", "Index", "Taxi")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

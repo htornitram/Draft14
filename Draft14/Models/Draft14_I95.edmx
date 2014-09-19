@@ -1,0 +1,656 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Draft14_I95Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Drafted">
+          <Key>
+            <PropertyRef Name="PlayerId" />
+          </Key>
+          <Property Name="PlayerId" Type="int" Nullable="false" />
+          <Property Name="RotoTeamId" Type="int" Nullable="false" />
+          <Property Name="PositionId" Type="int" Nullable="false" />
+          <Property Name="ActiveFlag" Type="int" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TypeYear" Type="nchar" MaxLength="2" Nullable="false" />
+          <Property Name="KeeperFlag" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MLBTeam">
+          <Key>
+            <PropertyRef Name="MLBTeamAbbr" />
+          </Key>
+          <Property Name="MLBTeamAbbr" Type="nvarchar" MaxLength="5" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="PlayerId" />
+          </Key>
+          <Property Name="PlayerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MLBTeam" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="RosterCat" Type="int" Nullable="false" />
+          <Property Name="PosDisp" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PosCode" Type="int" Nullable="false" />
+          <Property Name="ProjAB" Type="int" Nullable="false" />
+          <Property Name="ProjH" Type="int" Nullable="false" />
+          <Property Name="ProjHR" Type="int" Nullable="false" />
+          <Property Name="ProjRS" Type="int" Nullable="false" />
+          <Property Name="ProjRBI" Type="int" Nullable="false" />
+          <Property Name="ProjSB" Type="int" Nullable="false" />
+          <Property Name="ProjOuts" Type="int" Nullable="false" />
+          <Property Name="ProjER" Type="int" Nullable="false" />
+          <Property Name="ProjWH" Type="int" Nullable="false" />
+          <Property Name="ProjW" Type="int" Nullable="false" />
+          <Property Name="ProjSV" Type="int" Nullable="false" />
+          <Property Name="ProjK" Type="int" Nullable="false" />
+          <Property Name="EstValue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Ineligible" Type="int" Nullable="false" />
+          <Property Name="TierPos" Type="int" />
+          <Property Name="TierNum" Type="int" />
+          <Property Name="TierRank" Type="int" />
+          <Property Name="TierColor" Type="int" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="PosMask" />
+          </Key>
+          <Property Name="PosMask" Type="int" Nullable="false" />
+          <Property Name="PosPriority" Type="int" Nullable="false" />
+          <Property Name="PosName" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="RosterSlots" Type="int" Nullable="false" />
+          <Property Name="Derived" Type="int" Nullable="false" />
+          <Property Name="AuxPosition" Type="int" />
+        </EntityType>
+        <EntityType Name="RotoTeam">
+          <Key>
+            <PropertyRef Name="RotoTeamId" />
+          </Key>
+          <Property Name="RotoTeamId" Type="int" Nullable="false" />
+          <Property Name="RotoTeamName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TargetId" Type="int" Nullable="false" />
+          <Property Name="Owned" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Target">
+          <Key>
+            <PropertyRef Name="TargetId" />
+          </Key>
+          <Property Name="TargetId" Type="int" Nullable="false" />
+          <Property Name="TargetName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProjAB" Type="int" Nullable="false" />
+          <Property Name="ProjH" Type="int" Nullable="false" />
+          <Property Name="ProjHR" Type="int" Nullable="false" />
+          <Property Name="ProjRS" Type="int" Nullable="false" />
+          <Property Name="ProjRBI" Type="int" Nullable="false" />
+          <Property Name="ProjSB" Type="int" Nullable="false" />
+          <Property Name="ProjOuts" Type="int" Nullable="false" />
+          <Property Name="ProjER" Type="int" Nullable="false" />
+          <Property Name="ProjWH" Type="int" Nullable="false" />
+          <Property Name="ProjW" Type="int" Nullable="false" />
+          <Property Name="ProjSV" Type="int" Nullable="false" />
+          <Property Name="ProjK" Type="int" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PriceBat" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PricePit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Draft14_I95.dbo.PositionAnalysis' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PositionAnalysis">
+          <Key>
+            <PropertyRef Name="PositionId" />
+          </Key>
+          <Property Name="PositionId" Type="int" Nullable="false" />
+          <Property Name="OpenSlots" Type="int" />
+          <Property Name="CanMove" Type="int" Nullable="false" />
+          <Property Name="AuxOpenSlots" Type="int" />
+          <Property Name="AuxCanMove" Type="int" Nullable="false" />
+          <Property Name="TotPlayers" Type="int" />
+          <Property Name="AvailPlayers" Type="int" />
+          <Property Name="TopTot" Type="int" />
+          <Property Name="TopAvail" Type="int" />
+          <Property Name="MidTot" Type="int" />
+          <Property Name="MidAvail" Type="int" />
+          <Property Name="LowTot" Type="int" />
+          <Property Name="LowAvail" Type="int" />
+          <Property Name="AvailFactor" Type="numeric" Precision="1" Scale="1" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Draft14_I95.dbo.RotoTeamPosNeeded' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="RotoTeamPosNeeded">
+          <Key>
+            <PropertyRef Name="RotoTeamId" />
+          </Key>
+          <Property Name="RotoTeamId" Type="int" Nullable="false" />
+          <Property Name="PosNeeded" Type="nvarchar" MaxLength="100" />
+          <Property Name="PosMoves" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <Association Name="FK_Drafted_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Drafted" Type="Self.Drafted" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="PlayerId" />
+            </Principal>
+            <Dependent Role="Drafted">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Drafted_Position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Drafted" Type="Self.Drafted" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="PosMask" />
+            </Principal>
+            <Dependent Role="Drafted">
+              <PropertyRef Name="PositionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Drafted_RotoTeam">
+          <End Role="RotoTeam" Type="Self.RotoTeam" Multiplicity="1" />
+          <End Role="Drafted" Type="Self.Drafted" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RotoTeam">
+              <PropertyRef Name="RotoTeamId" />
+            </Principal>
+            <Dependent Role="Drafted">
+              <PropertyRef Name="RotoTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Player_MLBTeam">
+          <End Role="MLBTeam" Type="Self.MLBTeam" Multiplicity="1" />
+          <End Role="Player" Type="Self.Player" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MLBTeam">
+              <PropertyRef Name="MLBTeamAbbr" />
+            </Principal>
+            <Dependent Role="Player">
+              <PropertyRef Name="MLBTeam" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RotoTeam_Target">
+          <End Role="Target" Type="Self.Target" Multiplicity="1" />
+          <End Role="RotoTeam" Type="Self.RotoTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Target">
+              <PropertyRef Name="TargetId" />
+            </Principal>
+            <Dependent Role="RotoTeam">
+              <PropertyRef Name="TargetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Draft14_I95ModelStoreContainer">
+          <EntitySet Name="Drafted" EntityType="Self.Drafted" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MLBTeam" EntityType="Self.MLBTeam" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Player" EntityType="Self.Player" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Position" EntityType="Self.Position" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RotoTeam" EntityType="Self.RotoTeam" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Target" EntityType="Self.Target" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PositionAnalysis" EntityType="Self.PositionAnalysis" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[PositionAnalysis].[PositionId] AS [PositionId], 
+[PositionAnalysis].[OpenSlots] AS [OpenSlots], 
+[PositionAnalysis].[CanMove] AS [CanMove], 
+[PositionAnalysis].[AuxOpenSlots] AS [AuxOpenSlots], 
+[PositionAnalysis].[AuxCanMove] AS [AuxCanMove], 
+[PositionAnalysis].[TotPlayers] AS [TotPlayers], 
+[PositionAnalysis].[AvailPlayers] AS [AvailPlayers], 
+[PositionAnalysis].[TopTot] AS [TopTot], 
+[PositionAnalysis].[TopAvail] AS [TopAvail], 
+[PositionAnalysis].[MidTot] AS [MidTot], 
+[PositionAnalysis].[MidAvail] AS [MidAvail], 
+[PositionAnalysis].[LowTot] AS [LowTot], 
+[PositionAnalysis].[LowAvail] AS [LowAvail], 
+[PositionAnalysis].[AvailFactor] AS [AvailFactor]
+FROM [dbo].[PositionAnalysis] AS [PositionAnalysis]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="RotoTeamPosNeeded" EntityType="Self.RotoTeamPosNeeded" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[RotoTeamPosNeeded].[RotoTeamId] AS [RotoTeamId], 
+[RotoTeamPosNeeded].[PosNeeded] AS [PosNeeded], 
+[RotoTeamPosNeeded].[PosMoves] AS [PosMoves]
+FROM [dbo].[RotoTeamPosNeeded] AS [RotoTeamPosNeeded]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Drafted_Player" Association="Self.FK_Drafted_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="Drafted" EntitySet="Drafted" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Drafted_Position" Association="Self.FK_Drafted_Position">
+            <End Role="Position" EntitySet="Position" />
+            <End Role="Drafted" EntitySet="Drafted" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Drafted_RotoTeam" Association="Self.FK_Drafted_RotoTeam">
+            <End Role="RotoTeam" EntitySet="RotoTeam" />
+            <End Role="Drafted" EntitySet="Drafted" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Player_MLBTeam" Association="Self.FK_Player_MLBTeam">
+            <End Role="MLBTeam" EntitySet="MLBTeam" />
+            <End Role="Player" EntitySet="Player" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RotoTeam_Target" Association="Self.FK_RotoTeam_Target">
+            <End Role="Target" EntitySet="Target" />
+            <End Role="RotoTeam" EntitySet="RotoTeam" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Draft14_I95Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Drafted">
+          <Key>
+            <PropertyRef Name="PlayerId" />
+          </Key>
+          <Property Name="PlayerId" Type="Int32" Nullable="false" />
+          <Property Name="RotoTeamId" Type="Int32" Nullable="false" />
+          <Property Name="PositionId" Type="Int32" Nullable="false" />
+          <Property Name="ActiveFlag" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TypeYear" Type="String" MaxLength="2" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="KeeperFlag" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Player" Relationship="Self.FK_Drafted_Player" FromRole="Drafted" ToRole="Player" />
+          <NavigationProperty Name="Position" Relationship="Self.FK_Drafted_Position" FromRole="Drafted" ToRole="Position" />
+          <NavigationProperty Name="RotoTeam" Relationship="Self.FK_Drafted_RotoTeam" FromRole="Drafted" ToRole="RotoTeam" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="PlayerId" />
+          </Key>
+          <Property Name="PlayerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MLBTeam" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PosDisp" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PosCode" Type="Int32" Nullable="false" />
+          <Property Name="ProjAB" Type="Int32" Nullable="false" />
+          <Property Name="ProjH" Type="Int32" Nullable="false" />
+          <Property Name="ProjHR" Type="Int32" Nullable="false" />
+          <Property Name="ProjRS" Type="Int32" Nullable="false" />
+          <Property Name="ProjRBI" Type="Int32" Nullable="false" />
+          <Property Name="ProjSB" Type="Int32" Nullable="false" />
+          <Property Name="ProjOuts" Type="Int32" Nullable="false" />
+          <Property Name="ProjER" Type="Int32" Nullable="false" />
+          <Property Name="ProjWH" Type="Int32" Nullable="false" />
+          <Property Name="ProjW" Type="Int32" Nullable="false" />
+          <Property Name="ProjSV" Type="Int32" Nullable="false" />
+          <Property Name="ProjK" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Drafted" Relationship="Self.FK_Drafted_Player" FromRole="Player" ToRole="Drafted" />
+          <Property Name="EstValue" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Ineligible" Type="Int32" Nullable="false" />
+          <Property Name="TierPos" Type="Int32" />
+          <Property Name="TierNum" Type="Int32" />
+          <Property Name="TierRank" Type="Int32" />
+          <Property Name="TierColor" Type="Int32" />
+          <Property Name="Notes" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="RosterCat" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="MLBTeam1" Relationship="Draft14_I95Model.FK_Player_MLBTeam" FromRole="Player" ToRole="MLBTeam" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="PosMask" />
+          </Key>
+          <Property Name="PosMask" Type="Int32" Nullable="false" />
+          <Property Name="PosPriority" Type="Int32" Nullable="false" />
+          <Property Name="PosName" Type="String" MaxLength="2" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="RosterSlots" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Drafteds" Relationship="Self.FK_Drafted_Position" FromRole="Position" ToRole="Drafted" />
+          <Property Name="Derived" Type="Int32" Nullable="false" />
+          <Property Name="AuxPosition" Type="Int32" />
+          <NavigationProperty Name="PositionAnalysis" Relationship="Draft14_I95Model.PositionPositionAnalysis" FromRole="Position" ToRole="PositionAnalysis" />
+        </EntityType>
+        <EntityType Name="RotoTeam">
+          <Key>
+            <PropertyRef Name="RotoTeamId" />
+          </Key>
+          <Property Name="RotoTeamId" Type="Int32" Nullable="false" />
+          <Property Name="RotoTeamName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Drafteds" Relationship="Self.FK_Drafted_RotoTeam" FromRole="RotoTeam" ToRole="Drafted" />
+          <Property Name="TargetId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Target" Relationship="Draft14_I95Model.FK_RotoTeam_Target" FromRole="RotoTeam" ToRole="Target" />
+          <NavigationProperty Name="RotoTeamPosNeeded" Relationship="Draft14_I95Model.RotoTeamPosNeededRotoTeam" FromRole="RotoTeam" ToRole="RotoTeamPosNeeded" />
+          <Property Name="Owned" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Drafted_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Drafted" Type="Self.Drafted" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="PlayerId" />
+            </Principal>
+            <Dependent Role="Drafted">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Drafted_Position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Drafted" Type="Self.Drafted" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="PosMask" />
+            </Principal>
+            <Dependent Role="Drafted">
+              <PropertyRef Name="PositionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Drafted_RotoTeam">
+          <End Role="RotoTeam" Type="Self.RotoTeam" Multiplicity="1" />
+          <End Role="Drafted" Type="Self.Drafted" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RotoTeam">
+              <PropertyRef Name="RotoTeamId" />
+            </Principal>
+            <Dependent Role="Drafted">
+              <PropertyRef Name="RotoTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Draft14_I95Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Drafteds" EntityType="Self.Drafted" />
+          <EntitySet Name="Players" EntityType="Self.Player" />
+          <EntitySet Name="Positions" EntityType="Self.Position" />
+          <EntitySet Name="RotoTeams" EntityType="Self.RotoTeam" />
+          <AssociationSet Name="FK_Drafted_Player" Association="Self.FK_Drafted_Player">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="Drafted" EntitySet="Drafteds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Drafted_Position" Association="Self.FK_Drafted_Position">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="Drafted" EntitySet="Drafteds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Drafted_RotoTeam" Association="Self.FK_Drafted_RotoTeam">
+            <End Role="RotoTeam" EntitySet="RotoTeams" />
+            <End Role="Drafted" EntitySet="Drafteds" />
+          </AssociationSet>
+          <EntitySet Name="Targets" EntityType="Draft14_I95Model.Target" />
+          <EntitySet Name="MLBTeams" EntityType="Draft14_I95Model.MLBTeam" />
+          <AssociationSet Name="FK_Player_MLBTeam" Association="Draft14_I95Model.FK_Player_MLBTeam">
+            <End Role="MLBTeam" EntitySet="MLBTeams" />
+            <End Role="Player" EntitySet="Players" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RotoTeam_Target" Association="Draft14_I95Model.FK_RotoTeam_Target">
+            <End Role="Target" EntitySet="Targets" />
+            <End Role="RotoTeam" EntitySet="RotoTeams" />
+          </AssociationSet>
+          <EntitySet Name="RotoTeamPosNeededs" EntityType="Draft14_I95Model.RotoTeamPosNeeded" />
+          <AssociationSet Name="RotoTeamPosNeededRotoTeam" Association="Draft14_I95Model.RotoTeamPosNeededRotoTeam">
+            <End Role="RotoTeamPosNeeded" EntitySet="RotoTeamPosNeededs" />
+            <End Role="RotoTeam" EntitySet="RotoTeams" />
+          </AssociationSet>
+          <EntitySet Name="PositionAnalyses" EntityType="Draft14_I95Model.PositionAnalysis" />
+          <AssociationSet Name="PositionPositionAnalysis" Association="Draft14_I95Model.PositionPositionAnalysis">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="PositionAnalysis" EntitySet="PositionAnalyses" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Target">
+          <Key>
+            <PropertyRef Name="TargetId" />
+          </Key>
+          <Property Name="TargetId" Type="Int32" Nullable="false" />
+          <Property Name="TargetName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProjAB" Type="Int32" Nullable="false" />
+          <Property Name="ProjH" Type="Int32" Nullable="false" />
+          <Property Name="ProjHR" Type="Int32" Nullable="false" />
+          <Property Name="ProjRS" Type="Int32" Nullable="false" />
+          <Property Name="ProjRBI" Type="Int32" Nullable="false" />
+          <Property Name="ProjSB" Type="Int32" Nullable="false" />
+          <Property Name="ProjOuts" Type="Int32" Nullable="false" />
+          <Property Name="ProjER" Type="Int32" Nullable="false" />
+          <Property Name="ProjWH" Type="Int32" Nullable="false" />
+          <Property Name="ProjW" Type="Int32" Nullable="false" />
+          <Property Name="ProjSV" Type="Int32" Nullable="false" />
+          <Property Name="ProjK" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="PriceBat" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="PricePit" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <NavigationProperty Name="RotoTeams" Relationship="Draft14_I95Model.FK_RotoTeam_Target" FromRole="Target" ToRole="RotoTeam" />
+        </EntityType>
+        <EntityType Name="MLBTeam">
+          <Key>
+            <PropertyRef Name="MLBTeamAbbr" />
+          </Key>
+          <Property Name="MLBTeamAbbr" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Players" Relationship="Draft14_I95Model.FK_Player_MLBTeam" FromRole="MLBTeam" ToRole="Player" />
+        </EntityType>
+        <Association Name="FK_Player_MLBTeam">
+          <End Type="Draft14_I95Model.MLBTeam" Role="MLBTeam" Multiplicity="1" />
+          <End Type="Draft14_I95Model.Player" Role="Player" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MLBTeam">
+              <PropertyRef Name="MLBTeamAbbr" />
+            </Principal>
+            <Dependent Role="Player">
+              <PropertyRef Name="MLBTeam" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RotoTeam_Target">
+          <End Type="Draft14_I95Model.Target" Role="Target" Multiplicity="1" />
+          <End Type="Draft14_I95Model.RotoTeam" Role="RotoTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Target">
+              <PropertyRef Name="TargetId" />
+            </Principal>
+            <Dependent Role="RotoTeam">
+              <PropertyRef Name="TargetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RotoTeamPosNeeded">
+          <Key>
+            <PropertyRef Name="RotoTeamId" />
+          </Key>
+          <Property Name="RotoTeamId" Type="Int32" Nullable="false" />
+          <Property Name="PosNeeded" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="RotoTeam" Relationship="Draft14_I95Model.RotoTeamPosNeededRotoTeam" FromRole="RotoTeamPosNeeded" ToRole="RotoTeam" />
+          <Property Name="PosMoves" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="RotoTeamPosNeededRotoTeam">
+          <End Type="Draft14_I95Model.RotoTeamPosNeeded" Role="RotoTeamPosNeeded" Multiplicity="0..1" />
+          <End Type="Draft14_I95Model.RotoTeam" Role="RotoTeam" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="RotoTeam">
+              <PropertyRef Name="RotoTeamId" />
+            </Principal>
+            <Dependent Role="RotoTeamPosNeeded">
+              <PropertyRef Name="RotoTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PositionAnalysis">
+          <Key>
+            <PropertyRef Name="PositionId" />
+          </Key>
+          <Property Name="PositionId" Type="Int32" Nullable="false" />
+          <Property Name="OpenSlots" Type="Int32" />
+          <Property Name="CanMove" Type="Int32" Nullable="false" />
+          <Property Name="AuxOpenSlots" Type="Int32" />
+          <Property Name="AuxCanMove" Type="Int32" Nullable="false" />
+          <Property Name="TotPlayers" Type="Int32" />
+          <Property Name="AvailPlayers" Type="Int32" />
+          <Property Name="TopTot" Type="Int32" />
+          <Property Name="TopAvail" Type="Int32" />
+          <Property Name="MidTot" Type="Int32" />
+          <Property Name="MidAvail" Type="Int32" />
+          <Property Name="LowTot" Type="Int32" />
+          <Property Name="LowAvail" Type="Int32" />
+          <Property Name="AvailFactor" Type="Decimal" Nullable="false" Precision="1" Scale="1" />
+          <NavigationProperty Name="Position" Relationship="Draft14_I95Model.PositionPositionAnalysis" FromRole="PositionAnalysis" ToRole="Position" />
+        </EntityType>
+        <Association Name="PositionPositionAnalysis">
+          <End Type="Draft14_I95Model.Position" Role="Position" Multiplicity="1" />
+          <End Type="Draft14_I95Model.PositionAnalysis" Role="PositionAnalysis" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="PosMask" />
+            </Principal>
+            <Dependent Role="PositionAnalysis">
+              <PropertyRef Name="PositionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Draft14_I95ModelStoreContainer" CdmEntityContainer="Draft14_I95Entities">
+          <EntitySetMapping Name="Drafteds">
+            <EntityTypeMapping TypeName="Draft14_I95Model.Drafted">
+              <MappingFragment StoreEntitySet="Drafted">
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="RotoTeamId" ColumnName="RotoTeamId" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="ActiveFlag" ColumnName="ActiveFlag" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="TypeYear" ColumnName="TypeYear" />
+                <ScalarProperty Name="KeeperFlag" ColumnName="KeeperFlag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Players">
+            <EntityTypeMapping TypeName="Draft14_I95Model.Player">
+              <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="RosterCat" ColumnName="RosterCat" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="TierColor" ColumnName="TierColor" />
+                <ScalarProperty Name="TierRank" ColumnName="TierRank" />
+                <ScalarProperty Name="TierNum" ColumnName="TierNum" />
+                <ScalarProperty Name="TierPos" ColumnName="TierPos" />
+                <ScalarProperty Name="Ineligible" ColumnName="Ineligible" />
+                <ScalarProperty Name="EstValue" ColumnName="EstValue" />
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MLBTeam" ColumnName="MLBTeam" />
+                <ScalarProperty Name="PosDisp" ColumnName="PosDisp" />
+                <ScalarProperty Name="PosCode" ColumnName="PosCode" />
+                <ScalarProperty Name="ProjAB" ColumnName="ProjAB" />
+                <ScalarProperty Name="ProjH" ColumnName="ProjH" />
+                <ScalarProperty Name="ProjHR" ColumnName="ProjHR" />
+                <ScalarProperty Name="ProjRS" ColumnName="ProjRS" />
+                <ScalarProperty Name="ProjRBI" ColumnName="ProjRBI" />
+                <ScalarProperty Name="ProjSB" ColumnName="ProjSB" />
+                <ScalarProperty Name="ProjOuts" ColumnName="ProjOuts" />
+                <ScalarProperty Name="ProjER" ColumnName="ProjER" />
+                <ScalarProperty Name="ProjWH" ColumnName="ProjWH" />
+                <ScalarProperty Name="ProjW" ColumnName="ProjW" />
+                <ScalarProperty Name="ProjSV" ColumnName="ProjSV" />
+                <ScalarProperty Name="ProjK" ColumnName="ProjK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Positions">
+            <EntityTypeMapping TypeName="Draft14_I95Model.Position">
+              <MappingFragment StoreEntitySet="Position">
+                <ScalarProperty Name="AuxPosition" ColumnName="AuxPosition" />
+                <ScalarProperty Name="Derived" ColumnName="Derived" />
+                <ScalarProperty Name="PosMask" ColumnName="PosMask" />
+                <ScalarProperty Name="PosPriority" ColumnName="PosPriority" />
+                <ScalarProperty Name="PosName" ColumnName="PosName" />
+                <ScalarProperty Name="RosterSlots" ColumnName="RosterSlots" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Targets">
+            <EntityTypeMapping TypeName="Draft14_I95Model.Target">
+              <MappingFragment StoreEntitySet="Target">
+                <ScalarProperty Name="PricePit" ColumnName="PricePit" />
+                <ScalarProperty Name="PriceBat" ColumnName="PriceBat" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="ProjK" ColumnName="ProjK" />
+                <ScalarProperty Name="ProjSV" ColumnName="ProjSV" />
+                <ScalarProperty Name="ProjW" ColumnName="ProjW" />
+                <ScalarProperty Name="ProjWH" ColumnName="ProjWH" />
+                <ScalarProperty Name="ProjER" ColumnName="ProjER" />
+                <ScalarProperty Name="ProjOuts" ColumnName="ProjOuts" />
+                <ScalarProperty Name="ProjSB" ColumnName="ProjSB" />
+                <ScalarProperty Name="ProjRBI" ColumnName="ProjRBI" />
+                <ScalarProperty Name="ProjRS" ColumnName="ProjRS" />
+                <ScalarProperty Name="ProjHR" ColumnName="ProjHR" />
+                <ScalarProperty Name="ProjH" ColumnName="ProjH" />
+                <ScalarProperty Name="ProjAB" ColumnName="ProjAB" />
+                <ScalarProperty Name="TargetName" ColumnName="TargetName" />
+                <ScalarProperty Name="TargetId" ColumnName="TargetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MLBTeams">
+            <EntityTypeMapping TypeName="Draft14_I95Model.MLBTeam">
+              <MappingFragment StoreEntitySet="MLBTeam">
+                <ScalarProperty Name="MLBTeamAbbr" ColumnName="MLBTeamAbbr" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RotoTeams">
+            <EntityTypeMapping TypeName="IsTypeOf(Draft14_I95Model.RotoTeam)">
+              <MappingFragment StoreEntitySet="RotoTeam">
+                <ScalarProperty Name="Owned" ColumnName="Owned" />
+                <ScalarProperty Name="TargetId" ColumnName="TargetId" />
+                <ScalarProperty Name="RotoTeamName" ColumnName="RotoTeamName" />
+                <ScalarProperty Name="RotoTeamId" ColumnName="RotoTeamId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RotoTeamPosNeededs">
+            <EntityTypeMapping TypeName="Draft14_I95Model.RotoTeamPosNeeded">
+              <MappingFragment StoreEntitySet="RotoTeamPosNeeded">
+                <ScalarProperty Name="PosMoves" ColumnName="PosMoves" />
+                <ScalarProperty Name="PosNeeded" ColumnName="PosNeeded" />
+                <ScalarProperty Name="RotoTeamId" ColumnName="RotoTeamId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PositionAnalyses">
+            <EntityTypeMapping TypeName="Draft14_I95Model.PositionAnalysis">
+              <MappingFragment StoreEntitySet="PositionAnalysis">
+                <ScalarProperty Name="AvailFactor" ColumnName="AvailFactor" />
+                <ScalarProperty Name="LowAvail" ColumnName="LowAvail" />
+                <ScalarProperty Name="LowTot" ColumnName="LowTot" />
+                <ScalarProperty Name="MidAvail" ColumnName="MidAvail" />
+                <ScalarProperty Name="MidTot" ColumnName="MidTot" />
+                <ScalarProperty Name="TopAvail" ColumnName="TopAvail" />
+                <ScalarProperty Name="TopTot" ColumnName="TopTot" />
+                <ScalarProperty Name="AvailPlayers" ColumnName="AvailPlayers" />
+                <ScalarProperty Name="TotPlayers" ColumnName="TotPlayers" />
+                <ScalarProperty Name="AuxCanMove" ColumnName="AuxCanMove" />
+                <ScalarProperty Name="AuxOpenSlots" ColumnName="AuxOpenSlots" />
+                <ScalarProperty Name="CanMove" ColumnName="CanMove" />
+                <ScalarProperty Name="OpenSlots" ColumnName="OpenSlots" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

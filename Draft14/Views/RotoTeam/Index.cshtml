@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Draft14.Models.RotoTeam>
+
+@{
+    ViewBag.Title = "Roto Teams";
+}
+
+<h2>Roto Teams</h2>
+
+@foreach (var item in Model.OrderByDescending(x => x.Owned))
+{
+    Html.RenderPartial("RotoTeamSummary", item);
+}
+

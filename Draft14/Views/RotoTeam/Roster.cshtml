@@ -1,0 +1,295 @@
+﻿@model Draft14.Models.RotoTeam
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Roto Team Roster";
+}
+
+@{
+    Dictionary<string, decimal> teamTot = new Dictionary<string, decimal>();
+
+    teamTot.Add("BatPrice", Model.Drafteds.Where(x => x.PositionId > 1).Sum(x => x.Price));
+    teamTot.Add("AB", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjAB));
+    teamTot.Add("H", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjH));
+    teamTot.Add("HR", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjHR));
+    teamTot.Add("RS", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjRS));
+    teamTot.Add("RBI", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjRBI));
+    teamTot.Add("SB", Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjSB));
+
+    if (teamTot["AB"] > 0)
+    {
+        teamTot.Add("AVG", teamTot["H"] / teamTot["AB"]);
+    }
+    else
+    {
+        teamTot.Add("AVG", 0);
+    }
+
+    teamTot.Add("PitchPrice", Model.Drafteds.Where(x => x.PositionId == 1).Sum(x => x.Price));
+    teamTot.Add("Outs", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjOuts));
+    teamTot.Add("ER", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjER));
+    teamTot.Add("W", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjW));
+    teamTot.Add("SV", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjSV));
+    teamTot.Add("K", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjK));
+    teamTot.Add("WH", Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0).Sum(x => x.Player.ProjWH));
+
+    if (teamTot["Outs"] > 0)
+    {
+        teamTot.Add("ERA", teamTot["ER"] * 27 / teamTot["Outs"]);
+        teamTot.Add("WHIP", teamTot["WH"] * 3 / teamTot["Outs"]);
+    }
+    else
+    {
+        teamTot.Add("ERA", 0);
+        teamTot.Add("WHIP", 0);
+    }
+    
+    
+}
+
+<div class="">
+    @{Html.RenderPartial("RotoTeamSummary");}
+</div>
+
+<div>
+    <table class="table table-condensed">
+        <tr>
+            <th>Pos</th>
+            <th>Name</th>
+            <th></th>
+            <th class="text-right">Price</th>
+            <th></th>
+            <th class="text-right">AB</th>
+            <th class="text-right">H</th>
+            <th class="text-right">HR</th>
+            <th class="text-right">RS</th>
+            <th class="text-right">RBI</th>
+            <th class="text-right">SB</th>
+            <th class="text-right">AVG</th>
+            <th class="text-right">Est Value</th>
+            <th class="text-center">Tier</th>
+        </tr>
+
+        @foreach (var item in Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag > 0).OrderBy(x => x.PositionId))
+        {
+            <tr>
+                @if (item.Player.PosCode == item.PositionId)
+                {
+                    <td>@Html.DisplayFor(modelItem => item.Position.PosName)</td>
+                }
+                else
+                {
+                    <td>@Html.ActionLink(item.Position.PosName, "Move", "Player", new { id = item.PlayerId } , null)</td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Player.FirstName) @Html.DisplayFor(modelItem => item.Player.LastName)
+                    (@Html.DisplayFor(modelItem => item.Player.PosDisp))
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Player.MLBTeam)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.TypeYear)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjAB)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjH)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjHR)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjRS)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjRBI)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjSB)</td>
+
+                @if (item.Player.ProjAB == 0)
+                {
+                    <td class="text-right"></td>
+                }
+                else
+                {
+                    <td class="text-right">@(((float)item.Player.ProjH / item.Player.ProjAB).ToString("F3")) </td>
+                }
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.EstValue)</td>
+
+                @if (item.Player.TierColor.HasValue)
+                {
+                    string extraClass = "";
+                    switch (item.Player.TierColor)
+                    {
+                        case 3:
+                            extraClass = " success";
+                            break;
+                        case 2:
+
+                            extraClass = " warning";
+                            break;
+                        case 1:
+                            extraClass = " danger";
+                            break;
+                    }
+                    <td class="text-center @extraClass">
+                        @item.Player.TierNum ( #@(item.Player.TierRank) )
+                    </td>
+                }
+                else
+                {
+                    <td class="text-center"></td>
+                }
+
+            </tr>
+
+            if (item.Player.Notes != null)
+            {
+                <tr class="text-muted active" style="font-size:xx-small">
+                    <td colspan="2"></td>
+                    <td colspan="12">@item.Player.Notes</td>
+                </tr>
+            }
+        }
+
+
+        <tr class="active">
+            <td colspan="3">Totals</td>
+            <td class="text-right">@(teamTot["BatPrice"].ToString("F2"))</td>
+            <td></td>
+            <td class="text-right">@(teamTot["AB"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["H"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["HR"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["RS"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["RBI"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["SB"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["AVG"].ToString("F3"))</td>
+            <td colspan="2"></td>
+        </tr>
+
+        <tr class="danger">
+            <td colspan="14">
+                Reserves/Redshirts:
+
+                @foreach (var item in Model.Drafteds.Where(x => x.PositionId > 1 && x.ActiveFlag == 0).OrderBy(x => x.PositionId))
+                {
+                    string rs = item.Player.FirstName + " " + item.Player.LastName + " (" +
+                        item.Position.PosName + ", " + item.Player.MLBTeam + ") ... ";
+                    @rs
+                }
+            </td>
+        </tr>
+
+    </table>
+
+    <table class="table table-condensed">
+        <tr>
+            <th>Pos</th>
+            <th>Name</th>
+            <th></th>
+            <th class="text-right">Price</th>
+            <th></th>
+            <th class="text-right">IP</th>
+            <th class="text-right">ER</th>
+            <th class="text-right">W</th>
+            <th class="text-right">SV</th>
+            <th class="text-right">K</th>
+            <th class="text-right">WHIP</th>
+            <th class="text-right">ERA</th>
+            <th class="text-right">Est Value</th>
+            <th class="text-center">Tier</th>
+        </tr>
+
+        @foreach (var item in Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag > 0))
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Position.PosName)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Player.FirstName) @Html.DisplayFor(modelItem => item.Player.LastName)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Player.MLBTeam)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.TypeYear)</td>
+                <td class="text-right">@(item.Player.ProjOuts / 3).@(item.Player.ProjOuts % 3)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjER)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjW)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjSV)</td>
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.ProjK)</td>
+
+                @if (item.Player.ProjOuts == 0)
+                {
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                }
+                else
+                {
+                    <td class="text-right">@(((float)item.Player.ProjWH * 3.0 / item.Player.ProjOuts).ToString("F4")) </td>
+                    <td class="text-right">@(((float)item.Player.ProjER * 27.0 / item.Player.ProjOuts).ToString("F2")) </td>
+                }
+                <td class="text-right">@Html.DisplayFor(modelItem => item.Player.EstValue)</td>
+
+                @if (item.Player.TierColor.HasValue)
+                {
+                    string extraClass = "";
+                    switch (item.Player.TierColor)
+                    {
+                        case 3:
+                            extraClass = " success";
+                            break;
+                        case 2:
+
+                            extraClass = " warning";
+                            break;
+                        case 1:
+                            extraClass = " danger";
+                            break;
+                    }
+                    <td class="text-center @extraClass">
+                        @item.Player.TierNum ( #@(item.Player.TierRank) )
+                    </td>
+                }
+                else
+                {
+                    <td class="text-center"></td>
+                }
+
+            </tr>
+
+            if (item.Player.Notes != null)
+            {
+                <tr class="text-muted active" style="font-size:xx-small">
+                    <td colspan="2"></td>
+                    <td colspan="12">@item.Player.Notes</td>
+                </tr>
+            }
+        }
+
+
+        <tr class="active">
+            <td colspan="3">Totals</td>
+            <td class="text-right">@(teamTot["PitchPrice"].ToString("F2"))</td>
+            <td></td>
+            <td class="text-right">@(Math.Truncate(teamTot["Outs"] / 3)).@(teamTot["Outs"] % 3)</td>
+            <td class="text-right">@(teamTot["ER"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["W"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["SV"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["K"].ToString("F0"))</td>
+            <td class="text-right">@(teamTot["WHIP"].ToString("F4"))</td>
+            <td class="text-right">@(teamTot["ERA"].ToString("F2"))</td>
+            <td colspan="2"></td>
+        </tr>
+
+        <tr class="danger">
+            <td colspan="14">
+                Reserves/Redshirts:
+
+                @foreach (var item in Model.Drafteds.Where(x => x.PositionId == 1 && x.ActiveFlag == 0).OrderBy(x => x.PositionId))
+                {
+                    string rs = item.Player.FirstName + " " + item.Player.LastName + " (" + item.Player.MLBTeam + ") ... ";
+                    @rs
+                }
+            </td>
+        </tr>
+
+    </table>
+
+
+
+
+
+
+    <p>
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+
+
+</div>

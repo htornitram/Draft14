@@ -1,0 +1,94 @@
+﻿@model Draft14.Models.Drafted
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>
+            @(ViewBag.DraftType == "M" ? "Move: " : "Draft: ")
+            @Model.Player.FirstName @Model.Player.LastName (@Model.Player.MLBTeam)
+        </h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(model => model.PlayerId);
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RotoTeam, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.DraftType == "M")
+                {
+                    @Html.DisplayTextFor(model => model.RotoTeam.RotoTeamName);
+                }
+                else
+                {
+                    @Html.DropDownList("RotoTeamId", "")
+                    @Html.ValidationMessageFor(model => model.RotoTeamId)
+                }
+                <div class="text-danger" id="teamInfo">
+                    @if(ViewBag.DraftType == "M")
+                    {
+                        @((ViewBag.TeamInfo as Dictionary<int,string>)[Model.RotoTeamId])
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (ViewBag.DraftType != "T")
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.PositionId, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("PositionId")
+                    @Html.ValidationMessageFor(model => model.PositionId)
+                </div>
+            </div>
+        }
+
+        @if (ViewBag.DraftType == "A")
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Price, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Price)
+                    @Html.ValidationMessageFor(model => model.Price)
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @{string btnLbl = (ViewBag.DraftType == "M") ? "Move": "Draft";}
+                <input type="submit" value="@btnLbl" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    
+    if(ViewBag.DraftType != "M")
+    { 
+    <script>
+
+        var teamInfo = [];
+        teamInfo[0] = "";
+
+        @foreach(var item in (ViewBag.TeamInfo as Dictionary<int,string>))
+        {
+            <text>teamInfo[@(item.Key)] = "@(item.Value)";</text>
+        }
+
+        $("#RotoTeamId").change(
+            function () {
+                var selItem = $("#RotoTeamId").val();
+                $("#teamInfo").text(teamInfo[selItem]);
+
+            } )
+
+        .change();
+
+    </script>
+    }        
+ 
+}
+

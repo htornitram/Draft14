@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Draft14.Models.MLBTeam>
+
+@{
+    ViewBag.Title = "MLB Teams";
+}
+
+<h2>MLB Teams</h2>
+
+@foreach (var item in Model.OrderBy(x => x.MLBTeamAbbr))
+{
+    <span>@Html.ActionLink(item.MLBTeamAbbr, "Roster", new { id = item.MLBTeamAbbr }) </span>
+}
+

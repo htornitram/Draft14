@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Draft14.Models.Position>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Position Analysis";
+}
+
+<h2>Position Analysis</h2>
+
+<table class="table table-condensed">
+
+    <tr>
+        <th></th>
+        <th colspan="2" class="active text-center">Main Pos.</th>
+        <th colspan="2" class="text-center">Add'l Pos.</th>
+        <th colspan="2" class="success text-center">Top Tier</th>
+        <th colspan="2" class="warning text-center">Mid Tier</th>
+        <th colspan="2" class="danger text-center">Low Tier</th>
+        <th></th>
+    </tr>
+
+    <tr>
+        <th><br />Position</th>
+        <th class="active text-right"><br />Open</th>
+        <th class="active text-right">Can<br />Move</th>
+        <th class="text-right"><br />Open</th>
+        <th class="text-right">Can<br />Move</th>
+        <th class="success text-right"><br />Total</th>
+        <th class="success text-right"><br />Avail.</th>
+        <th class="warning text-right"><br />Total</th>
+        <th class="warning text-right"><br />Avail.</th>
+        <th class="danger text-right"><br />Total</th>
+        <th class="danger text-right"><br />Avail.</th>
+        <th class="text-right">Avail<br />Factor</th>
+    </tr>
+
+    @foreach (var item in Model.Where(x => x.Derived == 0).OrderBy(x => x.PosMask))
+    {
+        <tr>
+            <td>@item.PosName</td>
+            <td class="active text-right">@item.PositionAnalysis.OpenSlots</td>
+            <td class="active text-right">@item.PositionAnalysis.CanMove</td>
+            <td class="text-right">@item.PositionAnalysis.AuxOpenSlots</td>
+            <td class="text-right">@item.PositionAnalysis.AuxCanMove</td>
+            <td class="success text-right">@item.PositionAnalysis.TopTot</td>
+            <td class="success text-right">@item.PositionAnalysis.TopAvail</td>
+            <td class="warning text-right">@item.PositionAnalysis.MidTot</td>
+            <td class="warning text-right">@item.PositionAnalysis.MidAvail</td>
+            <td class="danger text-right">@item.PositionAnalysis.LowTot</td>
+            <td class="danger text-right">@item.PositionAnalysis.LowAvail</td>
+            <td class="text-right">@item.PositionAnalysis.AvailFactor.ToString("F2")</td>
+        </tr>        
+    }
+
+
+</table>
+

@@ -1,0 +1,358 @@
+﻿@model Draft14.ViewModels.MLBRosterViewModel
+
+@{
+    ViewBag.Title = "MLB Team Roster";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            @if (Model.TargetRotoTeam != null)
+            {
+                Html.RenderPartial("RotoTeamSummary", Model.TargetRotoTeam);
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <h2>@Model.MLBTeam.MLBTeamAbbr Roster</h2>
+            <table class="table table-condensed">
+                <tr>
+                    <th>Pitchers</th>
+                    <th class="text-right">IP</th>
+                    <th class="text-right">ER</th>
+                    <th class="text-right">W</th>
+                    <th class="text-right">SV</th>
+                    <th class="text-right">K</th>
+                    <th class="text-right">WHIP</th>
+                    <th class="text-right">ERA</th>
+                    <th class="text-right">Est Value</th>
+                    <th class="text-center">Tier</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.MLBTeam.Players.Where(x => x.RosterCat == 1 && x.Ineligible == 0).OrderBy(x => x.LastName))
+                {
+                    string rowClass = (item.Drafted == null) ? "" : "active";
+                    <tr class="@rowClass">
+                        <td>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjIP)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjER)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjW)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjSV)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjK)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjWHIP)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjERA)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.EstValue)</td>
+
+                        @if (item.TierColor.HasValue)
+                        {
+                            string extraClass = "";
+                            switch (item.TierColor)
+                            {
+                                case 3:
+                                    extraClass = " success";
+                                    break;
+                                case 2:
+
+                                    extraClass = " warning";
+                                    break;
+                                case 1:
+                                    extraClass = " danger";
+                                    break;
+                            }
+                            <td class="text-center @extraClass">
+                                @item.TierNum ( #@(item.TierRank) )
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center"></td>
+                        }
+
+                        @if (item.Drafted == null)
+                        {
+                            <td>@Html.ActionLink("Available", "DraftActive", "Player", new { id = item.PlayerId } , null)</td>
+                        }
+                        else
+                        {
+                            <td>@item.Drafted.RotoTeam.RotoTeamName</td>
+                        }
+
+                    </tr>
+
+                    if (item.Notes != null)
+                    {
+                        <tr class="text-muted active" style="font-size:xx-small">
+                            <td></td>
+                            <td colspan="10">@item.Notes</td>
+                        </tr>
+                    }
+
+
+                }
+
+            </table>
+
+
+            <table class="table table-condensed">
+                <tr>
+                    <th>Batters</th>
+                    <th class="text-right">AB</th>
+                    <th class="text-right">H</th>
+                    <th class="text-right">HR</th>
+                    <th class="text-right">RS</th>
+                    <th class="text-right">RBI</th>
+                    <th class="text-right">SB</th>
+                    <th class="text-right">AVG</th>
+                    <th class="text-right">Est Value</th>
+                    <th class="text-center">Tier</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.MLBTeam.Players.Where(x => x.RosterCat > 1 && x.Ineligible == 0)
+                .OrderBy(x => x.RosterCat).ThenBy(x => x.LastName))
+                {
+                    string rowClass = (item.Drafted == null) ? "" : "active";
+                    <tr class="@rowClass">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                            (@Html.DisplayFor(modelItem => item.PosDisp))
+                        </td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjAB)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjH)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjHR)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjRS)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjRBI)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjSB)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjAvg)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.EstValue)</td>
+
+                        @if (item.TierColor.HasValue)
+                        {
+                            string extraClass = "";
+                            switch (item.TierColor)
+                            {
+                                case 3:
+                                    extraClass = " success";
+                                    break;
+                                case 2:
+
+                                    extraClass = " warning";
+                                    break;
+                                case 1:
+                                    extraClass = " danger";
+                                    break;
+                            }
+                            <td class="text-center @extraClass">
+                                @item.TierNum ( #@(item.TierRank) )
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center"></td>
+                        }
+
+                        @if (item.Drafted == null)
+                        {
+                            <td>@Html.ActionLink("Available", "DraftActive", "Player", new { id = item.PlayerId } , null)</td>
+                        }
+                        else
+                        {
+                            <td>@item.Drafted.RotoTeam.RotoTeamName</td>
+                        }
+
+                    </tr>
+
+                    if (item.Notes != null)
+                    {
+                        <tr class="text-muted active" style="font-size:xx-small">
+                            <td></td>
+                            <td colspan="10">@item.Notes</td>
+                        </tr>
+                    }
+
+
+                }
+
+            </table>
+
+            <table class="table table-condensed">
+                <tr>
+                    <th>NRI Pitchers</th>
+                    <th class="text-right">IP</th>
+                    <th class="text-right">ER</th>
+                    <th class="text-right">W</th>
+                    <th class="text-right">SV</th>
+                    <th class="text-right">K</th>
+                    <th class="text-right">WHIP</th>
+                    <th class="text-right">ERA</th>
+                    <th class="text-right">Est Value</th>
+                    <th class="text-center">Tier</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.MLBTeam.Players.Where(x => x.RosterCat == 0 && x.PosCode == 1 && x.Ineligible == 0)
+                .OrderBy(x => x.LastName))
+                {
+                    string rowClass = (item.Drafted == null) ? "" : "active";
+                    <tr class="@rowClass">
+                        <td>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjIP)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjER)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjW)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjSV)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjK)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjWHIP)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjERA)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.EstValue)</td>
+
+                        @if (item.TierColor.HasValue)
+                        {
+                            string extraClass = "";
+                            switch (item.TierColor)
+                            {
+                                case 3:
+                                    extraClass = " success";
+                                    break;
+                                case 2:
+
+                                    extraClass = " warning";
+                                    break;
+                                case 1:
+                                    extraClass = " danger";
+                                    break;
+                            }
+                            <td class="text-center @extraClass">
+                                @item.TierNum ( #@(item.TierRank) )
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center"></td>
+                        }
+
+                        @if (item.Drafted == null)
+                        {
+                            <td>@Html.ActionLink("Available", "DraftActive", "Player", new { id = item.PlayerId } , null)</td>
+                        }
+                        else
+                        {
+                            <td>@item.Drafted.RotoTeam.RotoTeamName</td>
+                        }
+
+                    </tr>
+
+                    if (item.Notes != null)
+                    {
+                        <tr class="text-muted active" style="font-size:xx-small">
+                            <td></td>
+                            <td colspan="10">@item.Notes</td>
+                        </tr>
+                    }
+
+
+                }
+
+            </table>
+
+
+            <table class="table table-condensed">
+                <tr>
+                    <th>NRI Batters</th>
+                    <th class="text-right">AB</th>
+                    <th class="text-right">H</th>
+                    <th class="text-right">HR</th>
+                    <th class="text-right">RS</th>
+                    <th class="text-right">RBI</th>
+                    <th class="text-right">SB</th>
+                    <th class="text-right">AVG</th>
+                    <th class="text-right">Est Value</th>
+                    <th class="text-center">Tier</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.MLBTeam.Players.Where(x => x.RosterCat == 0 && x.PosCode > 1 && x.Ineligible == 0)
+                .OrderBy(x => x.LastName))
+                {
+                    string rowClass = (item.Drafted == null) ? "" : "active";
+                    <tr class="@rowClass">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                            (@Html.DisplayFor(modelItem => item.PosDisp))
+                        </td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjAB)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjH)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjHR)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjRS)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjRBI)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjSB)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.ProjAvg)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.EstValue)</td>
+
+                        @if (item.TierColor.HasValue)
+                        {
+                            string extraClass = "";
+                            switch (item.TierColor)
+                            {
+                                case 3:
+                                    extraClass = " success";
+                                    break;
+                                case 2:
+
+                                    extraClass = " warning";
+                                    break;
+                                case 1:
+                                    extraClass = " danger";
+                                    break;
+                            }
+                            <td class="text-center @extraClass">
+                                @item.TierNum ( #@(item.TierRank) )
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center"></td>
+                        }
+
+                        @if (item.Drafted == null)
+                        {
+                            <td>@Html.ActionLink("Available", "DraftActive", "Player", new { id = item.PlayerId } , null)</td>
+                        }
+                        else
+                        {
+                            <td>@item.Drafted.RotoTeam.RotoTeamName</td>
+                        }
+
+                    </tr>
+
+                    if (item.Notes != null)
+                    {
+                        <tr class="text-muted active" style="font-size:xx-small">
+                            <td></td>
+                            <td colspan="10">@item.Notes</td>
+                        </tr>
+                    }
+
+
+                }
+
+            </table>
+
+
+        </div>
+        <div class="col-md-2" style="position:fixed; right:0">
+            <table class="table table-bordered table-condensed">
+                @foreach (var item in Model.Positions.Where(x => x.PositionAnalysis != null).OrderBy(x => x.PosMask))
+                {
+                    <tr><td>@item.PosName: @item.PositionAnalysis.AvailFactor.ToString("F2")</td></tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
